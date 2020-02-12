@@ -60,10 +60,5 @@ server:
 
 logging:
   level:
-    org.apache.kafka.clients.producer: ERROR
-    org.apache.kafka.clients.consumer: ERROR
-    com.linkedin.kafka.clients.producer: ERROR
-    com.linkedin.kafka.clients.consumer: ERROR
-    com.revinate.carter.service: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
