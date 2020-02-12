@@ -1,0 +1,136 @@
+buildscript {
+    ext {
+        springBootVersion = '2.2.4.RELEASE'
+        gitPropertiesPluginVersion = '1.5.2'
+    }
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gitPropertiesPluginVersion}"
+    }
+}
+
+apply plugin: 'java'
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
+apply plugin: "com.gorylenko.gradle-git-properties"
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    maven {
+        credentials {
+            username "$artifactory_user"
+            password "$artifactory_password"
+        }
+        url "$artifactory_contextUrl/libs-release"
+    }
+}
+
+jar {
+    baseName = 'carter'
+}
+
+sourceSets {
+    componentTest {
+        java {
+            compileClasspath += main.output
+            compileClasspath += test.output
+            runtimeClasspath += main.output
+            runtimeClasspath += test.output
+        }
+    }
+    functionalTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+        }
+    }
+}
+
+configurations {
+    componentTestCompile.extendsFrom testCompile
+    componentTestRuntime.extendsFrom testRuntime
+    functionalTestCompile.extendsFrom componentTestCompile
+    functionalTestRuntime.extendsFrom componentTestCompile
+}
+
+dependencyManagement {
+    dependencies {
+        dependency 'joda-time:joda-time:2.9.9'
+        dependency 'com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.8.10'
+        dependency 'org.apache.commons:commons-lang3:3.1'
+        dependency 'com.h2database:h2:1.4.199'
+    }
+}
+
+dependencies {
+    compile "org.flywaydb:flyway-core"
+    compile "org.springframework.boot:spring-boot-starter"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-data-rest"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-security"
+    compile "org.springframework.boot:spring-boot-starter-aop"
+    compile 'org.projectlombok:lombok'
+    compile 'org.codehaus.janino:janino'
+    compile 'io.micrometer:micrometer-registry-prometheus'
+    compile 'io.micrometer:micrometer-registry-jmx'
+    compile 'org.apache.commons:commons-lang3'
+    compile 'joda-time:joda-time'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-cbor'
+    compile 'com.h2database:h2'
+    testCompile 'org.springframework.security:spring-security-test'
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd HH:mm:ssZ"
+    dateFormatTimeZone = 'GMT'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        afterSuite { desc, result ->
+            if (!desc.parent) {
+                println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            }
+        }
+    }
+}
+
+task componentTest(type: Test) {
+    testClassesDirs = sourceSets.componentTest.output.classesDirs
+    classpath = sourceSets.componentTest.runtimeClasspath
+
+    jvmArgs '-DXms2G', '-DXmx4G'
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat 'short'
+    }
+}
+
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.10'
+}
+
+

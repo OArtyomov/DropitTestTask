@@ -1,0 +1,69 @@
+unsecuredEndpoints: info, health, prometheus, env
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${unsecuredEndpoints}
+
+    jmx:
+      exposure:
+        include: ${unsecuredEndpoints}
+  metrics:
+    export:
+      jmx:
+        domain: com.dropit.delivery.metrics
+
+  application:
+    name: dropit
+  jmx:
+    enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    hikari:
+    # HikariCP settings (prefix: "spring.datasource.hikari.")
+    # (see: https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby)
+    #  minimumIdle: min # idle connections HikariCP tries to maintain in the pool
+      minimumIdle: 5
+    # maximumPoolSize: max pool size, including both idle and in-use connections
+      maximumPoolSize: 35
+    # idleTimeout: max time (ms) connection sits idle; applicable when minimumIdle < maximumPoolSize
+      idleTimeout: 180000
+    # leakDetectionThreshold: max time (ms) connection checked out before msg logged re: possible leak
+      leakDetectionThreshold: 1200000
+    # maxLifetime: max connection lifetime; applies only to checked in (inactive) connections, or 0=no limit
+      maxLifetime: 0
+    # connectionTimeout: maximum time (ms) client will wait for a connection from the pool
+      connectionTimeout: 60000
+      poolName: dropitDeliveryDBpool
+      registerMbeans: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.batch_size: 10000
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.jdbc.batch_versioned_data: true
+      hibernate.model.generator_name_as_sequence_name: false
+      hibernate.lob.non_contextual_creation: true
+      hibernate.temp.use_jdbc_metadata_defaults: false
+
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.apache.kafka.clients.producer: ERROR
+    org.apache.kafka.clients.consumer: ERROR
+    com.linkedin.kafka.clients.producer: ERROR
+    com.linkedin.kafka.clients.consumer: ERROR
+    com.revinate.carter.service: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE

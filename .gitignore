@@ -1,0 +1,17 @@
+build/*
+*.class
+
+# ignore .gradle files
+.gradle/*
+
+# ignore idea files
+*.ipr
+*.iml
+*.iws
+.idea/
+
+.DS_Store
+
+/out
+/src/main/resources/info.properties
+
