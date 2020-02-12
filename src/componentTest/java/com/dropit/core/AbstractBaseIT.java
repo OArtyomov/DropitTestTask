@@ -1,6 +1,8 @@
 package com.dropit.core;
 
 import com.dropit.DeliveryApplication;
+import com.dropit.dao.DeliveryRepository;
+import com.dropit.dao.PackageRepository;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -33,13 +35,20 @@ public abstract class AbstractBaseIT {
 	@Value("${local.server.port}")
 	protected int serverPort;
 
+	@Autowired
+	protected DeliveryRepository deliveryRepository;
+
+	@Autowired
+	protected PackageRepository packageRepository;
+
 	@Rule
 	public ExpectedException expectedException = none();
 
 
 	@Before
 	public void beforeEachTest() {
-
+		packageRepository.deleteAllInBatch();
+		deliveryRepository.deleteAllInBatch();
 	}
 
 
