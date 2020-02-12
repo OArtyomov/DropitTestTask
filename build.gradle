@@ -39,30 +39,6 @@ jar {
     baseName = 'dropitDelivery'
 }
 
-sourceSets {
-    componentTest {
-        java {
-            compileClasspath += main.output
-            compileClasspath += test.output
-            runtimeClasspath += main.output
-            runtimeClasspath += test.output
-        }
-    }
-    functionalTest {
-        java {
-            compileClasspath += main.output
-            runtimeClasspath += main.output
-        }
-    }
-}
-
-configurations {
-    componentTestCompile.extendsFrom testCompile
-    componentTestRuntime.extendsFrom testRuntime
-    functionalTestCompile.extendsFrom componentTestCompile
-    functionalTestRuntime.extendsFrom componentTestCompile
-}
-
 dependencyManagement {
     dependencies {
         dependency 'joda-time:joda-time:2.9.9'
@@ -107,18 +83,6 @@ test {
         }
     }
 }
-
-task componentTest(type: Test) {
-    testClassesDirs = sourceSets.componentTest.output.classesDirs
-    classpath = sourceSets.componentTest.runtimeClasspath
-
-    jvmArgs '-DXms2G', '-DXmx4G'
-    testLogging {
-        events 'passed', 'skipped', 'failed'
-        exceptionFormat 'short'
-    }
-}
-
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
