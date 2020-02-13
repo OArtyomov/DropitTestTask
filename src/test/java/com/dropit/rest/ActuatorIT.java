@@ -1,4 +1,4 @@
-package com.dropit.web;
+package com.dropit.rest;
 
 import com.dropit.core.AbstractBaseIT;
 import org.junit.Test;
