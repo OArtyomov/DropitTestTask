@@ -3,14 +3,21 @@ package com.dropit.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+
+import static java.util.Locale.US;
 
 @Configuration
 public class InternationalizationConfiguration {
 
-	/**
-	 * Create bean of interceptor for changing locale by a request parameter.
-	 */
+	@Bean
+	public AcceptHeaderLocaleResolver localeResolver() {
+		final AcceptHeaderLocaleResolver acceptHeaderLocaleResolver = new AcceptHeaderLocaleResolver();
+		acceptHeaderLocaleResolver.setDefaultLocale(US);
+		return acceptHeaderLocaleResolver;
+	}
+
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
@@ -18,10 +25,6 @@ public class InternationalizationConfiguration {
 		return lci;
 	}
 
-	/**
-	 * Create bean of message source.
-	 * Define the default locale for the locale context holder.
-	 */
 	@Bean
 	public ResourceBundleMessageSource msgSource() {
 		final ResourceBundleMessageSource resourceBundleMessageSource = new ResourceBundleMessageSource();
