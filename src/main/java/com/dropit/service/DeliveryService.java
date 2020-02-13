@@ -3,7 +3,7 @@ package com.dropit.service;
 import com.dropit.conversion.DeliveryConverter;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dto.CreateDeliveryDTO;
-import com.dropit.dto.DeliveryDTO;
+import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.exceptions.DeliveryNotFoundException;
 import com.dropit.model.DeliveryEntity;
 import lombok.AllArgsConstructor;
@@ -30,12 +30,12 @@ public class DeliveryService {
 	private DeliveryConverter deliveryConverter;
 
 	@Transactional
-	public List<DeliveryDTO> getAllDeliveries(Pageable pageRequest) {
+	public List<GETDeliveryDTO> getAllDeliveries(Pageable pageRequest) {
 		return deliveryConverter.convertAll(deliveryRepository.findItemsInPage(pageRequest));
 	}
 
 	@Transactional
-	public DeliveryDTO getDelivery(Long deliveryId) {
+	public GETDeliveryDTO getDelivery(Long deliveryId) {
 		final Optional<DeliveryEntity> entityById = deliveryRepository.findById(deliveryId);
 		if (entityById.isPresent()) {
 			return deliveryConverter.convert(entityById.get());
@@ -43,7 +43,7 @@ public class DeliveryService {
 		throw new DeliveryNotFoundException(deliveryId);
 	}
 
-	public DeliveryDTO createDelivery(CreateDeliveryDTO dto) {
+	public GETDeliveryDTO createDelivery(CreateDeliveryDTO dto) {
 		DeliveryEntity entity = new DeliveryEntity();
 		entity.setName(dto.getName());
 		deliveryRepository.save(entity);

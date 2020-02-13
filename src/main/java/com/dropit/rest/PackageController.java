@@ -1,8 +1,9 @@
 package com.dropit.rest;
 
 
-import com.dropit.dto.GETDeliveryDTO;
-import com.dropit.service.DeliveryService;
+import com.dropit.dto.CreatePackageDTO;
+import com.dropit.dto.GETPackageDTO;
+import com.dropit.service.PackageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Extension;
@@ -12,29 +13,30 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import static com.dropit.utils.Constants.COMMON_SWAGGER_TAG;
-import static com.dropit.utils.Constants.DELIVERY_ENTRY_BASE_URI;
+import static com.dropit.utils.Constants.PACKAGE_BASE_URI;
 import static lombok.AccessLevel.PRIVATE;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(tags = COMMON_SWAGGER_TAG)
 @RestController
-@RequestMapping(DELIVERY_ENTRY_BASE_URI)
+@RequestMapping(PACKAGE_BASE_URI)
 @Slf4j
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class DeliveryEntryController {
+public class PackageController {
 
-	private DeliveryService deliveryService;
+	private PackageService packageService;
 
-
-	@ApiOperation(value = "Get delivery by id.", notes = "The API returns delivery by id",
+	@ApiOperation(value = "Create package.", notes = "The API returns list of deliveries",
 			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
 			extensions = {
 					@Extension(properties = {
@@ -43,10 +45,11 @@ public class DeliveryEntryController {
 							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
 					})
 			})
-	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<GETDeliveryDTO> getDeliveryById(@PathVariable("deliveryId") Long deliveryId) {
-		return new ResponseEntity<>(deliveryService.getDelivery(deliveryId), OK);
+	@PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+	public ResponseEntity<GETPackageDTO> createPackage(@RequestBody @Valid CreatePackageDTO dto) {
+		return new ResponseEntity<>(packageService.createPackage(dto), CREATED);
 	}
+
 
 
 }

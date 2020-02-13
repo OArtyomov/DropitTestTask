@@ -1,7 +1,7 @@
 package com.dropit.conversion;
 
-import com.dropit.dto.GETDeliveryDTO;
-import com.dropit.model.DeliveryEntity;
+import com.dropit.dto.GETPackageDTO;
+import com.dropit.model.PackageEntity;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +14,12 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Service
-public class DeliveryConverter implements IConverter<DeliveryEntity, GETDeliveryDTO> {
-
+public class PackageConverter implements IConverter<PackageEntity, GETPackageDTO> {
 	@Override
-	public GETDeliveryDTO convert(DeliveryEntity source) {
-		GETDeliveryDTO result = new GETDeliveryDTO();
+	public GETPackageDTO convert(PackageEntity source) {
+		GETPackageDTO result = new GETPackageDTO();
 		result.setId(source.getId());
-		result.setName(source.getName());
+		result.setTag(source.getTag());
 		return result;
 	}
 }

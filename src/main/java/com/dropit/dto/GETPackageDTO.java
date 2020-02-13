@@ -3,9 +3,9 @@ package com.dropit.dto;
 import lombok.Data;
 
 @Data
-public class DeliveryDTO {
+public class GETPackageDTO {
 
 	private Long id;
 
-	private String name;
+	private String tag;
 }

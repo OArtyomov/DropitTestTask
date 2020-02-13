@@ -2,7 +2,7 @@ package com.dropit.rest;
 
 
 import com.dropit.dto.CreateDeliveryDTO;
-import com.dropit.dto.DeliveryDTO;
+import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.service.DeliveryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +51,7 @@ public class DeliveryController {
 					})
 			})
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<DeliveryDTO>>  getAllDeliveries(@PageableDefault(sort = {"name"}) Pageable pageRequest) {
+	public ResponseEntity<List<GETDeliveryDTO>>  getAllDeliveries(@PageableDefault(sort = {"name"}) Pageable pageRequest) {
 		return new ResponseEntity<>(deliveryService.getAllDeliveries(pageRequest), OK);
 	}
 
@@ -65,7 +65,7 @@ public class DeliveryController {
 					})
 			})
 	@PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<DeliveryDTO> createDelivery(@RequestBody @Valid CreateDeliveryDTO dto) {
+	public ResponseEntity<GETDeliveryDTO> createDelivery(@RequestBody @Valid CreateDeliveryDTO dto) {
 		return new ResponseEntity<>(deliveryService.createDelivery(dto), CREATED);
 	}
 

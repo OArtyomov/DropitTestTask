@@ -22,7 +22,7 @@ public class PackageEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(length = 36, nullable = false, name = "name")
-	private String name;
+	@Column(length = 36, nullable = false, name = "tag")
+	private String tag;
 
 }
