@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @DynamicUpdate
-@Table(name = "delivery")
+@Table(name = "delivery", schema = "public")
 @Getter
 @Setter
 @javax.persistence.Entity

@@ -46,7 +46,7 @@ public class DeliveryEntryControllerIT extends AbstractBaseIT {
 	public void testAppendPackageToDelivery() throws Exception {
 		DeliveryEntity deliveryEntity = buildEntity("Item 1");
 		deliveryRepository.save(deliveryEntity);
-		final List<PackageEntity> packageEntities = IntStream.range(1, 11).mapToObj(value -> buildPackage("Tag " + value)).collect(toList());
+		final List<PackageEntity> packageEntities = IntStream.range(1, 11).mapToObj(value -> buildPackage("Tag " + value, null)).collect(toList());
 		packageRepository.saveAll(packageEntities);
 		List<Long> ids = packageEntities.stream().map(entity -> entity.getId()).collect(toList());
 		mockMvc.perform(post("/api/v1/delivery/" + deliveryEntity.getId())
@@ -77,15 +77,4 @@ public class DeliveryEntryControllerIT extends AbstractBaseIT {
 				.andExpect(jsonPath("$.packages.[9].tag").value("Tag 10"));
 	}
 
-	private PackageEntity buildPackage(String tag) {
-		PackageEntity packageEntity = new PackageEntity();
-		packageEntity.setTag(tag);
-		return packageEntity;
-	}
-
-	private DeliveryEntity buildEntity(String deliveryName) {
-		DeliveryEntity deliveryEntity = new DeliveryEntity();
-		deliveryEntity.setName(deliveryName);
-		return deliveryEntity;
-	}
 }

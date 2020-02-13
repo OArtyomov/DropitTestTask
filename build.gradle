@@ -47,6 +47,7 @@ dependencyManagement {
         dependency 'com.h2database:h2:1.4.199'
         dependency 'io.springfox:springfox-swagger2:2.7.0'
         dependency 'io.springfox:springfox-swagger-ui:2.7.0'
+        dependency 'com.vladmihalcea:db-util:1.0.4'
     }
 }
 
@@ -68,6 +69,7 @@ dependencies {
     compile 'com.h2database:h2'
     compile 'io.springfox:springfox-swagger2'
     compile 'io.springfox:springfox-swagger-ui'
+    testCompile 'com.vladmihalcea:db-util'
     testCompile 'org.springframework.security:spring-security-test'
     testCompile "org.springframework.boot:spring-boot-starter-test"
 }

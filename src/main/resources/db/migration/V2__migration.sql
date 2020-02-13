@@ -1,8 +1,10 @@
+SET SCHEMA public;
+
 CREATE TABLE package
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     tag         varchar(36) NOT NULL,
-    delivery_id INT,
+    delivery_id BIGINT,
     foreign key (delivery_id) references delivery (id)
 
 );

@@ -3,6 +3,8 @@ package com.dropit.core;
 import com.dropit.DeliveryApplication;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
+import com.dropit.model.DeliveryEntity;
+import com.dropit.model.PackageEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,5 +57,17 @@ public abstract class AbstractBaseIT {
 		deliveryRepository.deleteAllInBatch();
 	}
 
+	protected PackageEntity buildPackage(String tag, DeliveryEntity deliveryEntity) {
+		PackageEntity packageEntity = new PackageEntity();
+		packageEntity.setTag(tag);
+		packageEntity.setDelivery(deliveryEntity);
+		return packageEntity;
+	}
+
+	protected DeliveryEntity buildEntity(String deliveryName) {
+		DeliveryEntity deliveryEntity = new DeliveryEntity();
+		deliveryEntity.setName(deliveryName);
+		return deliveryEntity;
+	}
 
 }

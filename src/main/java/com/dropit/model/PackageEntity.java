@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @DynamicUpdate
-@Table(name = "package")
+@Table(name = "package", schema = "public")
 @Getter
 @Setter
 @javax.persistence.Entity
