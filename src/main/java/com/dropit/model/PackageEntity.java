@@ -29,6 +29,6 @@ public class PackageEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "delivery_id", insertable = true, updatable = true)
-	private DeliveryEntity deliveryEntity;
+	private DeliveryEntity delivery;
 
 }

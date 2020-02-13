@@ -11,7 +11,10 @@ import java.util.List;
 
 public interface PackageRepository extends JpaRepository<PackageEntity, Long> {
 
-    @Query("update PackageEntity  set deliveryEntity = :deliveryEntity where ((id in (:ids)) and (deliveryEntity is null))")
+	@Query("update PackageEntity  set delivery = :deliveryEntity where ((id in (:ids)) and (delivery is null))")
 	@Modifying(flushAutomatically = true)
-	void setDeliveryToPackages(@Param("ids") List<Long> ids , @Param("deliveryEntity") DeliveryEntity deliveryEntity);
+	void setDeliveryToPackages(@Param("ids") List<Long> ids, @Param("deliveryEntity") DeliveryEntity deliveryEntity);
+
+	@Query("from PackageEntity where delivery in (:deliveries)")
+	List<PackageEntity> findPackagesForDeliveries(@Param("deliveries") List<DeliveryEntity> deliveries);
 }

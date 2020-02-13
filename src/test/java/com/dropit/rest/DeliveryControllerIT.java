@@ -66,8 +66,10 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 		mockMvc.perform(get("/api/v1/delivery/" + deliveryEntity.getId()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON))
-				.andExpect(jsonPath("$.length()").value(2))
+				.andExpect(jsonPath("$.length()").value(3))
 				.andExpect(jsonPath("$.name").value("Item 1"))
+				.andExpect(jsonPath("$.packages").isArray())
+				.andExpect(jsonPath("$.packages").isEmpty())
 				.andExpect(jsonPath("$.id").value(deliveryEntity.getId()));
 	}
 
