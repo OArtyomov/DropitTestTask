@@ -2,6 +2,7 @@ package com.dropit.service;
 
 import com.dropit.conversion.DeliveryConverter;
 import com.dropit.dao.DeliveryRepository;
+import com.dropit.dao.PackageRepository;
 import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.exceptions.DeliveryNotFoundException;
@@ -27,6 +28,8 @@ public class DeliveryService {
 
 	private DeliveryRepository deliveryRepository;
 
+	private PackageRepository packageRepository;
+
 	private DeliveryConverter deliveryConverter;
 
 	@Transactional
@@ -36,11 +39,15 @@ public class DeliveryService {
 
 	@Transactional
 	public GETDeliveryDTO getDelivery(Long deliveryId) {
-		final Optional<DeliveryEntity> entityById = deliveryRepository.findById(deliveryId);
-		if (entityById.isPresent()) {
-			return deliveryConverter.convert(entityById.get());
+		return deliveryConverter.convert(getDeliveryEntity(deliveryId));
+	}
+
+	private DeliveryEntity getDeliveryEntity(Long deliveryId) {
+		final Optional<DeliveryEntity> byId = deliveryRepository.findById(deliveryId);
+		if (!byId.isPresent()) {
+			throw new DeliveryNotFoundException(deliveryId);
 		}
-		throw new DeliveryNotFoundException(deliveryId);
+		return byId.get();
 	}
 
 	public GETDeliveryDTO createDelivery(CreateDeliveryDTO dto) {
@@ -48,5 +55,12 @@ public class DeliveryService {
 		entity.setName(dto.getName());
 		deliveryRepository.save(entity);
 		return deliveryConverter.convert(entity);
+	}
+
+	@Transactional
+	public GETDeliveryDTO appendPackagesToDelivery(Long deliveryId, List<Long> packages) {
+		DeliveryEntity deliveryEntity = getDeliveryEntity(deliveryId);
+		packageRepository.setDeliveryToPackages(packages, deliveryEntity);
+		return deliveryConverter.convert(deliveryEntity);
 	}
 }

@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @DynamicUpdate
@@ -24,5 +26,9 @@ public class PackageEntity {
 
 	@Column(length = 36, nullable = false, name = "tag")
 	private String tag;
+
+	@ManyToOne
+	@JoinColumn(name = "delivery_id", insertable = true, updatable = true)
+	private DeliveryEntity deliveryEntity;
 
 }

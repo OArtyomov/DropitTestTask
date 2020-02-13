@@ -14,8 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static com.dropit.utils.Constants.COMMON_SWAGGER_TAG;
 import static com.dropit.utils.Constants.DELIVERY_ENTRY_BASE_URI;
@@ -48,5 +52,19 @@ public class DeliveryEntryController {
 		return new ResponseEntity<>(deliveryService.getDelivery(deliveryId), OK);
 	}
 
+	@ApiOperation(value = "Get delivery by id.", notes = "The API returns delivery by id",
+			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
+			extensions = {
+					@Extension(properties = {
+							@ExtensionProperty(name = "x-category", value = "CDSGroups"),
+							@ExtensionProperty(name = "x-operationName", value = "getGroupByGroupIdUsingGET"),
+							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
+					})
+			})
+	@PostMapping(produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<GETDeliveryDTO> appendPackagesToDelivery(@PathVariable("deliveryId") Long deliveryId,
+																   @RequestBody List<Long> packages) {
+		return new ResponseEntity<>(deliveryService.appendPackagesToDelivery(deliveryId, packages), OK);
+	}
 
 }
