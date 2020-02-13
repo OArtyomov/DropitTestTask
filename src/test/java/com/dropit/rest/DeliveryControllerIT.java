@@ -60,30 +60,6 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 	}
 
 	@Test
-	public void testGetDeliveryByIdWhenDeliveryPresent() throws Exception {
-		DeliveryEntity deliveryEntity = buildEntity("Item 1");
-		deliveryRepository.save(deliveryEntity);
-		mockMvc.perform(get("/api/v1/delivery/" + deliveryEntity.getId()))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(APPLICATION_JSON))
-				.andExpect(jsonPath("$.length()").value(3))
-				.andExpect(jsonPath("$.name").value("Item 1"))
-				.andExpect(jsonPath("$.packages").isArray())
-				.andExpect(jsonPath("$.packages").isEmpty())
-				.andExpect(jsonPath("$.id").value(deliveryEntity.getId()));
-	}
-
-	@Test
-	public void testGetDeliveryByIdWhenDeliveryIsNotAvailable() throws Exception {
-		Long notAvailableIdOfDelivery = 800L;
-		mockMvc.perform(get("/api/v1/delivery/" + notAvailableIdOfDelivery))
-				.andExpect(status().isNotFound())
-				.andExpect(content().contentType(APPLICATION_JSON))
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$.message").value("Delivery with id 800 not found"));
-	}
-
-	@Test
 	public void testCreateDeliveryWhenValidationIsOk() throws Exception {
 		String deliveryName = "AA";
 		CreateDeliveryDTO dto = new CreateDeliveryDTO();
