@@ -1,6 +1,7 @@
 package com.dropit.rest;
 
 import com.dropit.core.AbstractBaseIT;
+import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.model.DeliveryEntity;
 import org.junit.Test;
 
@@ -10,6 +11,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -79,6 +81,34 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 				.andExpect(jsonPath("$.message").value("Delivery with id 800 not found"));
 	}
 
+	@Test
+	public void testCreateDeliveryWhenValidationIsOk() throws Exception {
+		String deliveryName = "AA";
+		CreateDeliveryDTO dto = new CreateDeliveryDTO();
+		dto.setName(deliveryName);
+		mockMvc.perform(post("/api/v1/delivery")
+				.content(objectMapper.writeValueAsString(dto))
+				.contentType(APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentType(APPLICATION_JSON))
+				.andExpect(jsonPath("$.name").value(deliveryName))
+				.andExpect(jsonPath("$.id").isNotEmpty());
+	}
+
+	@Test
+	public void testCreateDeliveryWhenValidationIsFailed() throws Exception {
+		String deliveryName = null;
+		CreateDeliveryDTO dto = new CreateDeliveryDTO();
+		dto.setName(deliveryName);
+		mockMvc.perform(post("/api/v1/delivery")
+				.content(objectMapper.writeValueAsString(dto))
+				.contentType(APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(APPLICATION_JSON))
+				.andExpect(jsonPath("$.length()").value(1L))
+				.andExpect(jsonPath("$.[0].fieldName").value("name"))
+				.andExpect(jsonPath("$.[0].message").value("must not be empty"));
+	}
 
 	private DeliveryEntity buildEntity(String deliveryName) {
 		DeliveryEntity deliveryEntity = new DeliveryEntity();

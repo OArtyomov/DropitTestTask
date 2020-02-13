@@ -3,6 +3,7 @@ package com.dropit.core;
 import com.dropit.DeliveryApplication;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -34,6 +35,9 @@ public abstract class AbstractBaseIT {
 
 	@Value("${local.server.port}")
 	protected int serverPort;
+
+	@Autowired
+	protected ObjectMapper objectMapper;
 
 	@Autowired
 	protected DeliveryRepository deliveryRepository;
