@@ -42,7 +42,7 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 	}
 
 	@Test
-	public void testGetAllDeliveriesWithPagingValuesAndtSortingValues() throws Exception {
+	public void testGetAllDeliveriesWithPagingValuesAndSortingValues() throws Exception {
 		List<DeliveryEntity> entities = range(1, 21)
 				.mapToObj(item -> buildEntity("Item " + item))
 				.collect(toList());
