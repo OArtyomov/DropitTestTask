@@ -1,6 +1,7 @@
 package com.dropit.core;
 
 import com.dropit.DeliveryApplication;
+import com.dropit.config.IntegrationTestConfigurationInitializer;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
 import com.dropit.model.DeliveryEntity;
@@ -28,7 +29,7 @@ import static org.junit.rules.ExpectedException.none;
 		value = {"spring.jmx.enabled=true"}
 )
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
-@ContextConfiguration()
+@ContextConfiguration(initializers = {IntegrationTestConfigurationInitializer.class})
 @ActiveProfiles("componentTest")
 public abstract class AbstractBaseIT {
 

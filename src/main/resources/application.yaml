@@ -19,10 +19,10 @@ spring:
   jmx:
     enabled: true
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=false;INIT=CREATE SCHEMA IF NOT EXISTS public;
-    username: sa
-    password: password
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhostl:5432/carterdb?rewriteBatchedStatements=true
+    username: carter
+    password: carter
     hikari:
     # HikariCP settings (prefix: "spring.datasource.hikari.")
     # (see: https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby)
@@ -41,7 +41,7 @@ spring:
       poolName: dropitDeliveryDBpool
       registerMbeans: true
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     open-in-view: false
     hibernate:
       ddl-auto: validate
