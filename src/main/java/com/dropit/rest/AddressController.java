@@ -38,29 +38,13 @@ public class AddressController {
 
 	private AddressService addressService;
 
-	@ApiOperation(value = "Get addresses by line.", notes = "The API returns list of deliveries",
-			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
-			extensions = {
-					@Extension(properties = {
-							@ExtensionProperty(name = "x-category", value = "CDSGroups"),
-							@ExtensionProperty(name = "x-operationName", value = "getGroupByGroupIdUsingGET"),
-							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
-					})
-			})
+	@ApiOperation(value = "Get addresses by line.", notes = "The API returns list of addresses")
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	public List<GETAddressDTO> findAddress(@RequestParam String addressLine){
      	return addressService.findAddressesByLine(addressLine);
 	 }
 
-	@ApiOperation(value = "Create address.", notes = "The API creates address",
-			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
-			extensions = {
-					@Extension(properties = {
-							@ExtensionProperty(name = "x-category", value = "CDSGroups"),
-							@ExtensionProperty(name = "x-operationName", value = "getGroupByGroupIdUsingGET"),
-							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
-					})
-			})
+	@ApiOperation(value = "Create address.", notes = "The API creates address")
 	@PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<GETAddressDTO> createAddress(@RequestBody @Valid CreateAddressDTO dto) {
 		return new ResponseEntity<>(addressService.createAddress(dto), CREATED);

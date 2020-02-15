@@ -5,8 +5,6 @@ import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.service.DeliveryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Extension;
-import io.swagger.annotations.ExtensionProperty;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -38,29 +36,13 @@ public class DeliveryEntryController {
 	private DeliveryService deliveryService;
 
 
-	@ApiOperation(value = "Get delivery by id.", notes = "The API returns delivery by id",
-			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
-			extensions = {
-					@Extension(properties = {
-							@ExtensionProperty(name = "x-category", value = "CDSGroups"),
-							@ExtensionProperty(name = "x-operationName", value = "getGroupByGroupIdUsingGET"),
-							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
-					})
-			})
+	@ApiOperation(value = "Get delivery by id.", notes = "The API returns delivery by id")
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<GETDeliveryDTO> getDeliveryById(@PathVariable("deliveryId") Long deliveryId) {
 		return new ResponseEntity<>(deliveryService.getDelivery(deliveryId), OK);
 	}
 
-	@ApiOperation(value = "Get delivery by id.", notes = "The API returns delivery by id",
-			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
-			extensions = {
-					@Extension(properties = {
-							@ExtensionProperty(name = "x-category", value = "CDSGroups"),
-							@ExtensionProperty(name = "x-operationName", value = "getGroupByGroupIdUsingGET"),
-							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
-					})
-			})
+	@ApiOperation(value = "Append package to delivery", notes = "The API append packages to delivery")
 	@PostMapping(produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<GETDeliveryDTO> appendPackagesToDelivery(@PathVariable("deliveryId") Long deliveryId,
 																   @RequestBody List<Long> packages) {

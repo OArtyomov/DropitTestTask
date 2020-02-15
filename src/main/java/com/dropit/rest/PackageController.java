@@ -6,8 +6,6 @@ import com.dropit.dto.GETPackageDTO;
 import com.dropit.service.PackageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Extension;
-import io.swagger.annotations.ExtensionProperty;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -36,20 +34,11 @@ public class PackageController {
 
 	private PackageService packageService;
 
-	@ApiOperation(value = "Create package.", notes = "The API returns list of deliveries",
-			nickname = "CDSGroups_getGroupByGroupIdUsingGET",
-			extensions = {
-					@Extension(properties = {
-							@ExtensionProperty(name = "x-category", value = "CDSGroups"),
-							@ExtensionProperty(name = "x-operationName", value = "getGroupByGroupIdUsingGET"),
-							@ExtensionProperty(name = "x-tag", value = "CDSGroups API: Object Groups")
-					})
-			})
+	@ApiOperation(value = "Create package.", notes = "The API create package")
 	@PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<GETPackageDTO> createPackage(@RequestBody @Valid CreatePackageDTO dto) {
 		return new ResponseEntity<>(packageService.createPackage(dto), CREATED);
 	}
-
 
 
 }

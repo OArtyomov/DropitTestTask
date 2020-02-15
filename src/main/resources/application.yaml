@@ -20,9 +20,9 @@ spring:
     enabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhostl:5432/carterdb?rewriteBatchedStatements=true
-    username: carter
-    password: carter
+    url: jdbc:postgresql://localhost:5432/carterdb?rewriteBatchedStatements=true
+    username: postgres
+    password: olga1999
     hikari:
     # HikariCP settings (prefix: "spring.datasource.hikari.")
     # (see: https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby)
