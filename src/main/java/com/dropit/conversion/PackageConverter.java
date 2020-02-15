@@ -1,5 +1,6 @@
 package com.dropit.conversion;
 
+import com.dropit.conversion.core.IConverter;
 import com.dropit.dto.GETPackageDTO;
 import com.dropit.model.PackageEntity;
 import lombok.AllArgsConstructor;

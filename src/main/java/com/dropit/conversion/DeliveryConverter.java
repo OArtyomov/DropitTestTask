@@ -1,5 +1,6 @@
 package com.dropit.conversion;
 
+import com.dropit.conversion.core.IConverter;
 import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.model.DeliveryEntity;
 import lombok.AllArgsConstructor;

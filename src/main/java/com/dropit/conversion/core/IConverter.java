@@ -1,4 +1,4 @@
-package com.dropit.conversion;
+package com.dropit.conversion.core;
 
 import org.springframework.core.convert.converter.Converter;
 
