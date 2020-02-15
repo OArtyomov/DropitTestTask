@@ -21,6 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.annotation.Resource;
+
 import static org.junit.rules.ExpectedException.none;
 
 @RunWith(SpringRunner.class)
@@ -40,16 +42,16 @@ public abstract class AbstractBaseIT {
 	@Value("${local.server.port}")
 	protected int serverPort;
 
-	@Autowired
+	@Resource
 	protected ObjectMapper objectMapper;
 
-	@Autowired
+	@Resource
 	protected DeliveryRepository deliveryRepository;
 
-	@Autowired
+	@Resource
 	protected PackageRepository packageRepository;
 
-	@Autowired
+	@Resource
 	protected AddressRepository addressRepository;
 
 	@Rule

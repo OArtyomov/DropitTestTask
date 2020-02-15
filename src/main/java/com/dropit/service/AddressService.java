@@ -5,14 +5,18 @@ import com.dropit.dao.AddressRepository;
 import com.dropit.dto.CreateAddressDTO;
 import com.dropit.dto.GETAddressDTO;
 import com.dropit.model.AddressEntity;
+import com.google.common.base.Splitter;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.google.common.base.Splitter.on;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -26,8 +30,18 @@ public class AddressService {
 	private AddressConverter addressConverter;
 
 	public List<GETAddressDTO> findAddressesByLine(String addressLine) {
+		return addressConverter.convertAll(
+				addressRepository.findAddresses(convertToTextFoFullSearch(addressLine)));
+	}
 
-		return null;
+	protected String convertToTextFoFullSearch(String addressLine) {
+		return on(" ")
+				.omitEmptyStrings()
+				.trimResults()
+				.splitToList(addressLine)
+				.stream()
+				.filter(item -> !StringUtils.isEmpty(item))
+				.collect(Collectors.joining(" | "));
 	}
 
 	public GETAddressDTO createAddress(CreateAddressDTO dto) {
