@@ -10,7 +10,9 @@ public final class Constants {
 
 	public static final String PACKAGE_BASE_URI = "/api/v1/package";
 
-	public static final String DELIVERY_ENTRY_BASE_URI = "/api/v1/delivery/{deliveryId}";
+	public static final String ADDRESS_BASE_URI = "/api/v1/address";
+
+	public static final String DELIVERY_ENTRY_BASE_URI = DELIVERY_BASE_URI + "/{deliveryId}";
 
 	public static final String COMMON_SWAGGER_TAG = "Delivery API: delivery";
 }

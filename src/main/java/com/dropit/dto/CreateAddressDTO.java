@@ -5,11 +5,8 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class CreateDeliveryDTO {
+public class CreateAddressDTO {
 
 	@NotEmpty
-	private String name;
-
-	@NotEmpty
-	private String address;
+	private String addressLine;
 }

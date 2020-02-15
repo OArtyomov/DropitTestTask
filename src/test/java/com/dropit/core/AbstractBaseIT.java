@@ -2,6 +2,7 @@ package com.dropit.core;
 
 import com.dropit.DeliveryApplication;
 import com.dropit.config.IntegrationTestConfigurationInitializer;
+import com.dropit.dao.AddressRepository;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
 import com.dropit.model.DeliveryEntity;
@@ -48,6 +49,9 @@ public abstract class AbstractBaseIT {
 	@Autowired
 	protected PackageRepository packageRepository;
 
+	@Autowired
+	protected AddressRepository addressRepository;
+
 	@Rule
 	public ExpectedException expectedException = none();
 
@@ -56,6 +60,7 @@ public abstract class AbstractBaseIT {
 	public void beforeEachTest() {
 		packageRepository.deleteAllInBatch();
 		deliveryRepository.deleteAllInBatch();
+		addressRepository.deleteAllInBatch();
 	}
 
 	protected PackageEntity buildPackage(String tag, DeliveryEntity deliveryEntity) {
