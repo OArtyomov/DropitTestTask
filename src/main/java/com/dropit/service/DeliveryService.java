@@ -2,11 +2,13 @@ package com.dropit.service;
 
 import com.dropit.conversion.DeliveryConverter;
 import com.dropit.conversion.PackageConverter;
+import com.dropit.dao.AddressRepository;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
 import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.exceptions.DeliveryNotFoundException;
+import com.dropit.model.AddressEntity;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
 import lombok.AllArgsConstructor;
@@ -35,6 +37,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class DeliveryService {
 
 	private DeliveryRepository deliveryRepository;
+
+	private AddressRepository addressRepository;
 
 	private PackageRepository packageRepository;
 
@@ -89,8 +93,14 @@ public class DeliveryService {
 	}
 
 	public GETDeliveryDTO createDelivery(CreateDeliveryDTO dto) {
+		Long addressId = dto.getAddressId();
+		final Optional<AddressEntity> address = addressRepository.findById(addressId);
+		if (!address.isPresent()){
+			throw new IllegalArgumentException("No address with id "  + addressId);
+		}
 		DeliveryEntity entity = new DeliveryEntity();
 		entity.setName(dto.getName());
+		entity.setAddress(address.get());
 		deliveryRepository.save(entity);
 		return deliveryConverter.convert(entity);
 	}

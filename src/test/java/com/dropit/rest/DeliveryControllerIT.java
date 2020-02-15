@@ -2,10 +2,13 @@ package com.dropit.rest;
 
 import com.dropit.core.AbstractBaseIT;
 import com.dropit.dto.CreateDeliveryDTO;
+import com.dropit.dto.GETAddressDTO;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
+import com.dropit.service.AddressService;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -20,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DeliveryControllerIT extends AbstractBaseIT {
+
+	@Autowired
+	private AddressService addressService;
 
 	@Test
 	public void testGetAllDeliveriesWithDefaultPagingValuesAndDefaultSortingValues() throws Exception {
@@ -99,8 +105,11 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 	@Test
 	public void testCreateDeliveryWhenValidationIsOk() throws Exception {
 		String deliveryName = "AA";
+		String addressLine = "Kiev, UA";
+		final GETAddressDTO address = addressService.createAddress(createAddress(addressLine));
 		CreateDeliveryDTO dto = new CreateDeliveryDTO();
 		dto.setName(deliveryName);
+		dto.setAddressId(address.getId());
 		mockMvc.perform(post("/api/v1/delivery")
 				.content(objectMapper.writeValueAsString(dto))
 				.contentType(APPLICATION_JSON))
@@ -113,8 +122,11 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 	@Test
 	public void testCreateDeliveryWhenValidationIsFailed() throws Exception {
 		String deliveryName = null;
+		String addressLine = "Kiev, UA";
+		final GETAddressDTO address = addressService.createAddress(createAddress(addressLine));
 		CreateDeliveryDTO dto = new CreateDeliveryDTO();
 		dto.setName(deliveryName);
+		dto.setAddressId(address.getId());
 		mockMvc.perform(post("/api/v1/delivery")
 				.content(objectMapper.writeValueAsString(dto))
 				.contentType(APPLICATION_JSON))

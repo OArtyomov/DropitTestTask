@@ -29,5 +29,5 @@ public class DeliveryEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "address_id")
-	private AddressEntity delivery;
+	private AddressEntity address;
 }
