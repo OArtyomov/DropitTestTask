@@ -5,7 +5,6 @@ import com.dropit.dao.AddressRepository;
 import com.dropit.dto.CreateAddressDTO;
 import com.dropit.dto.GETAddressDTO;
 import com.dropit.model.AddressEntity;
-import com.google.common.base.Splitter;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +30,10 @@ public class AddressService {
 
 	public List<GETAddressDTO> findAddressesByLine(String addressLine) {
 		return addressConverter.convertAll(
-				addressRepository.findAddresses(convertToTextFoFullSearch(addressLine)));
+				addressRepository.findAddresses(convertToTextForFullSearch(addressLine)));
 	}
 
-	protected String convertToTextFoFullSearch(String addressLine) {
+	protected String convertToTextForFullSearch(String addressLine) {
 		return on(" ")
 				.omitEmptyStrings()
 				.trimResults()

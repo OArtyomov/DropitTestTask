@@ -14,7 +14,7 @@ public class AddressServiceTest {
 	private AddressService addressService;
 
 	@Test
-	public void testConvertToTextFoFullSearch() {
-		assertThat(addressService.convertToTextFoFullSearch("Ukraine Kiev")).isEqualTo("Ukraine | Kiev");
+	public void testConvertToTextForFullSearch() {
+		assertThat(addressService.convertToTextForFullSearch("Ukraine Kiev")).isEqualTo("Ukraine | Kiev");
 	}
 }

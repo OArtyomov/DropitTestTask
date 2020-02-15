@@ -35,12 +35,6 @@ public class AddressControllerIT extends AbstractBaseIT {
 		assertThat(addressRepository.count()).isEqualTo(1L);
 	}
 
-	private CreateAddressDTO createAddress(String addressAsOneLine) {
-		CreateAddressDTO result = new CreateAddressDTO();
-		result.setAddressLine(addressAsOneLine);
-		return result;
-	}
-
 	@Test
 	public void testFindAddresses() throws Exception {
 		String addressAsOneLine1 = "Kreshatic 26";
