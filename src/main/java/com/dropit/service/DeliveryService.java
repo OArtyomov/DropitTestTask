@@ -2,19 +2,19 @@ package com.dropit.service;
 
 import com.dropit.conversion.DeliveryConverter;
 import com.dropit.conversion.PackageConverter;
-import com.dropit.dao.AddressRepository;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
 import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.dto.GETDeliveryDTO;
+import com.dropit.event.CreateDeliveryEvent;
 import com.dropit.exceptions.DeliveryNotFoundException;
-import com.dropit.model.AddressEntity;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,13 +38,13 @@ public class DeliveryService {
 
 	private DeliveryRepository deliveryRepository;
 
-	private AddressRepository addressRepository;
-
 	private PackageRepository packageRepository;
 
 	private DeliveryConverter deliveryConverter;
 
 	private PackageConverter packageConverter;
+
+	private ApplicationContext applicationContext;
 
 	@Transactional
 	public List<GETDeliveryDTO> getAllDeliveries(Pageable pageRequest) {
@@ -93,16 +93,9 @@ public class DeliveryService {
 	}
 
 	public GETDeliveryDTO createDelivery(CreateDeliveryDTO dto) {
-		Long addressId = dto.getAddressId();
-		final Optional<AddressEntity> address = addressRepository.findById(addressId);
-		if (!address.isPresent()){
-			throw new IllegalArgumentException("No address with id "  + addressId);
-		}
-		DeliveryEntity entity = new DeliveryEntity();
-		entity.setName(dto.getName());
-		entity.setAddress(address.get());
-		deliveryRepository.save(entity);
-		return deliveryConverter.convert(entity);
+		final CreateDeliveryEvent event = new CreateDeliveryEvent(dto);
+		applicationContext.publishEvent(event);
+		return event.getResult();
 	}
 
 	@Transactional
