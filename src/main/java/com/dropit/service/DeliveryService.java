@@ -1,13 +1,11 @@
 package com.dropit.service;
 
-import com.dropit.conversion.DeliveryConverter;
-import com.dropit.conversion.PackageConverter;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
 import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.dto.GETDeliveryDTO;
+import com.dropit.event.AddPackagesToDeliveryEvent;
 import com.dropit.event.CreateDeliveryEvent;
-import com.dropit.exceptions.DeliveryNotFoundException;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
 import lombok.AllArgsConstructor;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -40,11 +37,9 @@ public class DeliveryService {
 
 	private PackageRepository packageRepository;
 
-	private DeliveryConverter deliveryConverter;
-
-	private PackageConverter packageConverter;
-
 	private ApplicationContext applicationContext;
+
+	private DeliveryManager deliveryManager;
 
 	@Transactional
 	public List<GETDeliveryDTO> getAllDeliveries(Pageable pageRequest) {
@@ -63,33 +58,18 @@ public class DeliveryService {
 
 		return deliveries
 				.stream()
-				.map(item -> convertDelivery(item, packagesForDelivery.get(item)))
+				.map(item -> deliveryManager.convertDelivery(item, packagesForDelivery.get(item)))
 				.collect(toList());
 	}
 
-	private GETDeliveryDTO getDeliveryAndFillPackages(DeliveryEntity entity) {
+	public GETDeliveryDTO getDeliveryAndFillPackages(DeliveryEntity entity) {
 		final List<PackageEntity> packagesForDeliveries = packageRepository.findPackagesForDeliveries(singletonList(entity));
-		return convertDelivery(entity, packagesForDeliveries);
-	}
-
-
-	private GETDeliveryDTO convertDelivery(DeliveryEntity item, List<PackageEntity> packageEntities) {
-		GETDeliveryDTO result = deliveryConverter.convert(item);
-		result.setPackages(packageConverter.convertAll(packageEntities));
-		return result;
+		return deliveryManager.convertDelivery(entity, packagesForDeliveries);
 	}
 
 	@Transactional
 	public GETDeliveryDTO getDelivery(Long deliveryId) {
-		return getDeliveryAndFillPackages(getDeliveryEntity(deliveryId));
-	}
-
-	private DeliveryEntity getDeliveryEntity(Long deliveryId) {
-		final Optional<DeliveryEntity> byId = deliveryRepository.findById(deliveryId);
-		if (!byId.isPresent()) {
-			throw new DeliveryNotFoundException(deliveryId);
-		}
-		return byId.get();
+		return getDeliveryAndFillPackages(deliveryManager.getDeliveryEntity(deliveryId));
 	}
 
 	public GETDeliveryDTO createDelivery(CreateDeliveryDTO dto) {
@@ -98,10 +78,9 @@ public class DeliveryService {
 		return event.getResult();
 	}
 
-	@Transactional
 	public GETDeliveryDTO appendPackagesToDelivery(Long deliveryId, List<Long> packages) {
-		DeliveryEntity deliveryEntity = getDeliveryEntity(deliveryId);
-		packageRepository.setDeliveryToPackages(packages, deliveryEntity);
-		return getDeliveryAndFillPackages(deliveryEntity);
+		AddPackagesToDeliveryEvent event = new AddPackagesToDeliveryEvent(deliveryId, packages);
+		applicationContext.publishEvent(event);
+		return event.getResult();
 	}
 }
