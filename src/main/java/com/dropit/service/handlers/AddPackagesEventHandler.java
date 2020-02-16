@@ -3,6 +3,7 @@ package com.dropit.service.handlers;
 import com.dropit.dao.PackageRepository;
 import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.event.AddPackagesToDeliveryEvent;
+import com.dropit.event.AddPackagesToDeliverySource;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.service.DeliveryManager;
 import lombok.AllArgsConstructor;
@@ -27,9 +28,10 @@ public class AddPackagesEventHandler {
 
 	@EventListener(AddPackagesToDeliveryEvent.class)
 	@Transactional
-	public void handleCreateDeliveryCommand(AddPackagesToDeliveryEvent event) {
-		DeliveryEntity deliveryEntity = deliveryManager.getDeliveryEntity(event.getDeliveryId());
-		packageRepository.setDeliveryToPackages(event.getPackages(), deliveryEntity);
+	public void handleAddPackagesToDeliveryCommand(AddPackagesToDeliveryEvent event) {
+		final AddPackagesToDeliverySource source = event.getSource();
+		DeliveryEntity deliveryEntity = deliveryManager.getDeliveryEntity(source.getDeliveryId());
+		packageRepository.setDeliveryToPackages(source.getPackages(), deliveryEntity);
 		final GETDeliveryDTO resultDTO = deliveryManager.getDeliveryAndFillPackages(deliveryEntity);
 		event.setResult(resultDTO);
 	}

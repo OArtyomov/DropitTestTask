@@ -3,32 +3,23 @@ package com.dropit.event;
 import com.dropit.dto.GETDeliveryDTO;
 import org.springframework.context.ApplicationEvent;
 
-import java.util.List;
-
 public class AddPackagesToDeliveryEvent extends ApplicationEvent {
 
-	private final Long deliveryId;
-
-	private final List<Long> packages;
+	private AddPackagesToDeliverySource source;
 
 	private GETDeliveryDTO result;
 
-	public AddPackagesToDeliveryEvent(Long deliveryId, List<Long> packages) {
-		super(packages);
-		this.deliveryId = deliveryId;
-		this.packages = packages;
+	public AddPackagesToDeliveryEvent(AddPackagesToDeliverySource source) {
+		super(source);
 	}
 
 	public void setResult(GETDeliveryDTO result) {
 		this.result = result;
 	}
 
-	public Long getDeliveryId() {
-		return deliveryId;
-	}
-
-	public List<Long> getPackages() {
-		return packages;
+	@Override
+	public AddPackagesToDeliverySource getSource() {
+		return source;
 	}
 
 	public GETDeliveryDTO getResult() {
