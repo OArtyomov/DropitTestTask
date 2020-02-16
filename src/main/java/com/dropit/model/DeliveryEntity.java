@@ -30,4 +30,7 @@ public class DeliveryEntity {
 	@ManyToOne
 	@JoinColumn(name = "address_id")
 	private AddressEntity address;
+
+	@Column(insertable = false, updatable = false, name = "address_id")
+	private Long addressId;
 }

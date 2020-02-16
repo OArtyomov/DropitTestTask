@@ -3,6 +3,7 @@ package com.dropit.rest;
 import com.dropit.core.AbstractBaseIT;
 import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.dto.GETAddressDTO;
+import com.dropit.model.AddressEntity;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
 import com.dropit.service.AddressService;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static java.util.stream.Collectors.toList;
@@ -34,7 +36,7 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 	@Test
 	public void testGetAllDeliveriesWithDefaultPagingValuesAndDefaultSortingValues() throws Exception {
 		List<DeliveryEntity> entities = range(1, 21)
-				.mapToObj(item -> buildEntity("Item " + item))
+				.mapToObj(item -> buildEntity("Item " + item, null))
 				.collect(toList());
 
 		deliveryRepository.saveAll(entities);
@@ -54,11 +56,38 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 				.andExpect(jsonPath("$.[9].name").value("Item 18"));
 	}
 
+	@Test
+	public void testFindDeliveryByAddressId() throws Exception {
+		String addressLine = "Kiev, UA";
+		final GETAddressDTO address = addressService.createAddress(createAddress(addressLine));
+
+		final Optional<AddressEntity> addressById = addressRepository.findById(address.getId());
+		List<DeliveryEntity> entities = range(1, 11)
+				.mapToObj(item -> buildEntity("Item " + item, addressById.get()))
+				.collect(toList());
+		deliveryRepository.saveAll(entities);
+
+		mockMvc.perform(get("/api/v1/delivery/byAddress")
+				.param("addressId", address.getId().toString()))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(APPLICATION_JSON))
+				.andExpect(jsonPath("$.length()").value(10))
+				.andExpect(jsonPath("$.[0].name").value("Item 1"))
+				.andExpect(jsonPath("$.[1].name").value("Item 10"))
+				.andExpect(jsonPath("$.[2].name").value("Item 2"))
+				.andExpect(jsonPath("$.[3].name").value("Item 3"))
+				.andExpect(jsonPath("$.[4].name").value("Item 4"))
+				.andExpect(jsonPath("$.[5].name").value("Item 5"))
+				.andExpect(jsonPath("$.[6].name").value("Item 6"))
+				.andExpect(jsonPath("$.[7].name").value("Item 7"))
+				.andExpect(jsonPath("$.[8].name").value("Item 8"))
+				.andExpect(jsonPath("$.[9].name").value("Item 9"));
+	}
 
 	@Test
 	public void testGetAllDeliveriesAndQueriesCount() throws Exception {
 		List<DeliveryEntity> entities = range(1, 11)
-				.mapToObj(item -> buildEntity("Item " + item))
+				.mapToObj(item -> buildEntity("Item " + item, null))
 				.collect(toList());
 		deliveryRepository.saveAll(entities);
 
@@ -91,7 +120,7 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 	@Test
 	public void testGetAllDeliveriesWithPagingValuesAndSortingValues() throws Exception {
 		List<DeliveryEntity> entities = range(1, 21)
-				.mapToObj(item -> buildEntity("Item " + item))
+				.mapToObj(item -> buildEntity("Item " + item, null))
 				.collect(toList());
 
 		deliveryRepository.saveAll(entities);

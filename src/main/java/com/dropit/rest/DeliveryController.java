@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -46,6 +47,13 @@ public class DeliveryController {
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GETDeliveryDTO>> getAllDeliveries(@PageableDefault(sort = {"name"}) Pageable pageRequest) {
 		return new ResponseEntity<>(deliveryService.getAllDeliveries(pageRequest), OK);
+	}
+
+	@ApiOperation(value = "Get all deliveries by address.", notes = "The API returns list of deliveries for specific address")
+	@GetMapping(produces = APPLICATION_JSON_VALUE, value = "/byAddress")
+	public ResponseEntity<List<GETDeliveryDTO>> getAllDeliveries(@PageableDefault(sort = {"name"}) Pageable pageRequest,
+																 @RequestParam  Long addressId) {
+		return new ResponseEntity<>(deliveryService.getAllDeliveriesByAddress(pageRequest, addressId), OK);
 	}
 
 	@ApiOperation(value = "Create delivery.", notes = "The API create delivery")

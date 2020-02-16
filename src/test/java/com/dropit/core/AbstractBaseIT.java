@@ -6,6 +6,7 @@ import com.dropit.dao.AddressRepository;
 import com.dropit.dao.DeliveryRepository;
 import com.dropit.dao.PackageRepository;
 import com.dropit.dto.CreateAddressDTO;
+import com.dropit.model.AddressEntity;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,9 +74,10 @@ public abstract class AbstractBaseIT {
 		return packageEntity;
 	}
 
-	protected DeliveryEntity buildEntity(String deliveryName) {
+	protected DeliveryEntity buildEntity(String deliveryName, AddressEntity addressEntity) {
 		DeliveryEntity deliveryEntity = new DeliveryEntity();
 		deliveryEntity.setName(deliveryName);
+		deliveryEntity.setAddress(addressEntity);
 		return deliveryEntity;
 	}
 

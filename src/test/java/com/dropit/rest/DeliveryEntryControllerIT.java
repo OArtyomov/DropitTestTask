@@ -24,7 +24,7 @@ public class DeliveryEntryControllerIT extends AbstractBaseIT {
 
 	@Test
 	public void testGetDeliveryByIdWhenDeliveryPresent() throws Exception {
-		DeliveryEntity deliveryEntity = buildEntity("Item 1");
+		DeliveryEntity deliveryEntity = buildEntity("Item 1", null);
 		deliveryRepository.save(deliveryEntity);
 		mockMvc.perform(get("/api/v1/delivery/" + deliveryEntity.getId()))
 				.andExpect(status().isOk())
@@ -48,7 +48,7 @@ public class DeliveryEntryControllerIT extends AbstractBaseIT {
 
 	@Test
 	public void testAppendPackageToDelivery() throws Exception {
-		DeliveryEntity deliveryEntity = buildEntity("Item 1");
+		DeliveryEntity deliveryEntity = buildEntity("Item 1", null);
 		deliveryRepository.save(deliveryEntity);
 		final List<PackageEntity> packageEntities = IntStream.range(1, 11).mapToObj(value -> buildPackage("Tag " + value, null)).collect(toList());
 		packageRepository.saveAll(packageEntities);

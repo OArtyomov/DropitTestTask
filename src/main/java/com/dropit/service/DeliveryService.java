@@ -90,4 +90,13 @@ public class DeliveryService {
 		applicationContext.publishEvent(event);
 		return completedFuture(event.getResult());
 	}
+
+	@Transactional
+	public List<GETDeliveryDTO> getAllDeliveriesByAddress(Pageable pageRequest, Long addressId) {
+		final List<DeliveryEntity> itemsByAddressId = deliveryRepository.findItemsByAddressId(pageRequest, addressId);
+		if (!isEmpty(itemsByAddressId)) {
+			return getDeliveriesAndFillPackages(itemsByAddressId);
+		}
+		return emptyList();
+	}
 }
