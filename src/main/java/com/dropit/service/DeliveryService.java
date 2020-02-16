@@ -83,9 +83,10 @@ public class DeliveryService {
 		return completedFuture(event.getResult());
 	}
 
-	public GETDeliveryDTO appendPackagesToDelivery(Long deliveryId, List<Long> packages) {
+	@Async
+	public CompletableFuture<GETDeliveryDTO> appendPackagesToDelivery(Long deliveryId, List<Long> packages) {
 		AddPackagesToDeliveryEvent event = new AddPackagesToDeliveryEvent(new AddPackagesToDeliverySource(deliveryId, packages));
 		applicationContext.publishEvent(event);
-		return event.getResult();
+		return completedFuture(event.getResult());
 	}
 }

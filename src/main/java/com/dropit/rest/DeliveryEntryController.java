@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import static com.dropit.utils.Constants.COMMON_SWAGGER_TAG;
 import static com.dropit.utils.Constants.DELIVERY_ENTRY_BASE_URI;
@@ -44,9 +47,16 @@ public class DeliveryEntryController {
 
 	@ApiOperation(value = "Append package to delivery", notes = "The API append packages to delivery")
 	@PostMapping(produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<GETDeliveryDTO> appendPackagesToDelivery(@PathVariable("deliveryId") Long deliveryId,
-																   @RequestBody List<Long> packages) {
-		return new ResponseEntity<>(deliveryService.appendPackagesToDelivery(deliveryId, packages), OK);
+	public CompletableFuture<ResponseEntity<GETDeliveryDTO>> appendPackagesToDelivery(@PathVariable("deliveryId") Long deliveryId,
+																					  @RequestBody List<Long> packages) {
+		return deliveryService.appendPackagesToDelivery(deliveryId, packages).thenApply(result -> new ResponseEntity<>(result, OK))
+				.exceptionally(handleAddPackagesToDeliveryFailure);
 	}
+
+	private static Function<Throwable, ResponseEntity<GETDeliveryDTO>> handleAddPackagesToDeliveryFailure = throwable -> {
+		log.error("Failed to add packages delivery: ", throwable);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	};
+
 
 }

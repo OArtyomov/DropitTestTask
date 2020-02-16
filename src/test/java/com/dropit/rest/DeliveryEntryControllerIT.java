@@ -4,16 +4,20 @@ import com.dropit.core.AbstractBaseIT;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
 import org.junit.Test;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DeliveryEntryControllerIT extends AbstractBaseIT {
@@ -49,9 +53,15 @@ public class DeliveryEntryControllerIT extends AbstractBaseIT {
 		final List<PackageEntity> packageEntities = IntStream.range(1, 11).mapToObj(value -> buildPackage("Tag " + value, null)).collect(toList());
 		packageRepository.saveAll(packageEntities);
 		List<Long> ids = packageEntities.stream().map(entity -> entity.getId()).collect(toList());
-		mockMvc.perform(post("/api/v1/delivery/" + deliveryEntity.getId())
+
+		MvcResult mvcResult = mockMvc.perform(post("/api/v1/delivery/" + deliveryEntity.getId())
 				.content(objectMapper.writeValueAsString(ids))
 				.contentType(APPLICATION_JSON))
+				.andExpect(request().asyncStarted())
+				.andDo(MockMvcResultHandlers.log())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(mvcResult))
 				.andExpect(jsonPath("$.id").isNotEmpty())
 				.andExpect(jsonPath("$.name").value("Item 1"))
 				.andExpect(jsonPath("$.packages.length()").value(10L))

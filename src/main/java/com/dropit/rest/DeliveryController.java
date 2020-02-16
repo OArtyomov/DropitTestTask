@@ -52,11 +52,11 @@ public class DeliveryController {
 	@PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	public CompletableFuture<ResponseEntity<GETDeliveryDTO>> createDelivery(@RequestBody @Valid CreateDeliveryDTO dto) {
 		final CompletableFuture<ResponseEntity<GETDeliveryDTO>> future = deliveryService.createDelivery(dto).thenApply(result -> new ResponseEntity<>(result, CREATED))
-				.exceptionally(handleGetCarFailure);
+				.exceptionally(handleCreateDeliveryFailure);
 		return future;
 	}
 
-	private static Function<Throwable, ResponseEntity<GETDeliveryDTO>> handleGetCarFailure = throwable -> {
+	private static Function<Throwable, ResponseEntity<GETDeliveryDTO>> handleCreateDeliveryFailure = throwable -> {
 		log.error("Failed to create delivery: ", throwable);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	};
