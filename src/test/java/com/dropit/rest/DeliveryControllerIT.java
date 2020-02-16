@@ -9,6 +9,8 @@ import com.dropit.service.AddressService;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.List;
 
@@ -16,10 +18,12 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DeliveryControllerIT extends AbstractBaseIT {
@@ -110,9 +114,15 @@ public class DeliveryControllerIT extends AbstractBaseIT {
 		CreateDeliveryDTO dto = new CreateDeliveryDTO();
 		dto.setName(deliveryName);
 		dto.setAddressId(address.getId());
-		mockMvc.perform(post("/api/v1/delivery")
+
+		MvcResult mvcResult = mockMvc.perform(post("/api/v1/delivery")
 				.content(objectMapper.writeValueAsString(dto))
 				.contentType(APPLICATION_JSON))
+				.andExpect(request().asyncStarted())
+				.andDo(MockMvcResultHandlers.log())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(mvcResult))
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(APPLICATION_JSON))
 				.andExpect(jsonPath("$.name").value(deliveryName))

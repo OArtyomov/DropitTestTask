@@ -41,6 +41,7 @@ public class CreateDeliveryEventHandler {
 
 	@EventListener(CreateDeliveryEvent.class)
 	public void handleCreateDeliveryCommand(CreateDeliveryEvent event) {
+		log.info("Process create delivery command");
 		final AddressEntity address = validateCreateDeliveryCommand(event.getSource());
 		CreateDeliveryDTO dto = event.getSource();
 		DeliveryEntity entity = new DeliveryEntity();

@@ -11,6 +11,7 @@ public class AddPackagesToDeliveryEvent extends ApplicationEvent {
 
 	public AddPackagesToDeliveryEvent(AddPackagesToDeliverySource source) {
 		super(source);
+		this.source = source;
 	}
 
 	public void setResult(GETDeliveryDTO result) {
