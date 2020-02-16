@@ -17,12 +17,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static com.dropit.utils.Constants.ASYNC_TASK_EXECUTOR_BEAN_NAME;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.concurrent.CompletableFuture.completedFuture;
@@ -45,7 +45,6 @@ public class DeliveryService {
 
 	private DeliveryManager deliveryManager;
 
-	@Transactional
 	public List<GETDeliveryDTO> getAllDeliveries(Pageable pageRequest) {
 		final List<DeliveryEntity> deliveries = deliveryRepository.findItemsInPage(pageRequest);
 		if (!isEmpty(deliveries)) {
@@ -71,19 +70,18 @@ public class DeliveryService {
 		return deliveryManager.convertDelivery(entity, packagesForDeliveries);
 	}
 
-	@Transactional
 	public GETDeliveryDTO getDelivery(Long deliveryId) {
 		return getDeliveryAndFillPackages(deliveryManager.getDeliveryEntity(deliveryId));
 	}
 
-	@Async
+	@Async(value = ASYNC_TASK_EXECUTOR_BEAN_NAME)
 	public CompletableFuture<GETDeliveryDTO> createDelivery(CreateDeliveryDTO dto) {
 		final CreateDeliveryEvent event = new CreateDeliveryEvent(dto);
 		applicationContext.publishEvent(event);
 		return completedFuture(event.getResult());
 	}
 
-	@Async
+	@Async(value = ASYNC_TASK_EXECUTOR_BEAN_NAME)
 	public CompletableFuture<GETDeliveryDTO> appendPackagesToDelivery(Long deliveryId, List<Long> packages) {
 		AddPackagesToDeliveryEvent event = new AddPackagesToDeliveryEvent(new AddPackagesToDeliverySource(deliveryId, packages));
 		applicationContext.publishEvent(event);

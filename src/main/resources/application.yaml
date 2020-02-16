@@ -61,3 +61,8 @@ server:
 logging:
   level:
     org.hibernate.SQL: DEBUG
+
+async:
+  poolSize: 100
+  maxPoolSize: 100
+  queueSize: 100

@@ -8,17 +8,19 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
+import static com.dropit.utils.Constants.ASYNC_TASK_EXECUTOR_BEAN_NAME;
+
 @Configuration
 @EnableAsync
 @Slf4j
 public class AsyncConfiguration {
 
-	@Bean(name = "taskExecutor")
-	public Executor taskExecutor() {
+	@Bean(name = ASYNC_TASK_EXECUTOR_BEAN_NAME)
+	public Executor taskExecutor(ApplicationConfiguration applicationConfiguration) {
 		final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(100);
-		executor.setMaxPoolSize(100);
-		executor.setQueueCapacity(100);
+		executor.setCorePoolSize(applicationConfiguration.getAsyncPoolSize());
+		executor.setMaxPoolSize(applicationConfiguration.getMaxPoolSize());
+		executor.setQueueCapacity(applicationConfiguration.getQueueSize());
 		executor.setThreadNamePrefix("ExecuteCommandsThread-");
 		executor.initialize();
 		return executor;

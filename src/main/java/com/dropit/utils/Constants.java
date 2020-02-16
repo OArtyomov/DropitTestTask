@@ -15,4 +15,6 @@ public final class Constants {
 	public static final String DELIVERY_ENTRY_BASE_URI = DELIVERY_BASE_URI + "/{deliveryId}";
 
 	public static final String COMMON_SWAGGER_TAG = "Delivery API: delivery";
+
+	public static final String ASYNC_TASK_EXECUTOR_BEAN_NAME = "asyncTaskExecutor";
 }
