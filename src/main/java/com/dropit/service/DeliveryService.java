@@ -5,6 +5,7 @@ import com.dropit.dao.PackageRepository;
 import com.dropit.dto.CreateDeliveryDTO;
 import com.dropit.dto.GETDeliveryDTO;
 import com.dropit.event.AddPackagesToDeliveryEvent;
+import com.dropit.event.AddPackagesToDeliverySource;
 import com.dropit.event.CreateDeliveryEvent;
 import com.dropit.model.DeliveryEntity;
 import com.dropit.model.PackageEntity;
@@ -14,14 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
@@ -72,14 +76,15 @@ public class DeliveryService {
 		return getDeliveryAndFillPackages(deliveryManager.getDeliveryEntity(deliveryId));
 	}
 
-	public GETDeliveryDTO createDelivery(CreateDeliveryDTO dto) {
+	@Async
+	public CompletableFuture<GETDeliveryDTO> createDelivery(CreateDeliveryDTO dto) {
 		final CreateDeliveryEvent event = new CreateDeliveryEvent(dto);
 		applicationContext.publishEvent(event);
-		return event.getResult();
+		return completedFuture(event.getResult());
 	}
 
 	public GETDeliveryDTO appendPackagesToDelivery(Long deliveryId, List<Long> packages) {
-		AddPackagesToDeliveryEvent event = new AddPackagesToDeliveryEvent(deliveryId, packages);
+		AddPackagesToDeliveryEvent event = new AddPackagesToDeliveryEvent(new AddPackagesToDeliverySource(deliveryId, packages));
 		applicationContext.publishEvent(event);
 		return event.getResult();
 	}

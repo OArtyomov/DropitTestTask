@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import static com.dropit.utils.Constants.COMMON_SWAGGER_TAG;
 import static com.dropit.utils.Constants.DELIVERY_BASE_URI;
@@ -47,9 +50,16 @@ public class DeliveryController {
 
 	@ApiOperation(value = "Create delivery.", notes = "The API create delivery")
 	@PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<GETDeliveryDTO> createDelivery(@RequestBody @Valid CreateDeliveryDTO dto) {
-		return new ResponseEntity<>(deliveryService.createDelivery(dto), CREATED);
+	public CompletableFuture<ResponseEntity<GETDeliveryDTO>> createDelivery(@RequestBody @Valid CreateDeliveryDTO dto) {
+		final CompletableFuture<ResponseEntity<GETDeliveryDTO>> future = deliveryService.createDelivery(dto).thenApply(result -> new ResponseEntity<>(result, CREATED))
+				.exceptionally(handleGetCarFailure);
+		return future;
 	}
+
+	private static Function<Throwable, ResponseEntity<GETDeliveryDTO>> handleGetCarFailure = throwable -> {
+		log.error("Failed to create delivery: ", throwable);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	};
 
 
 }
