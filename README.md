@@ -34,3 +34,7 @@ or
 ```
   java -jar build/libs/DropitTestTask.jar
 ```
+
+## How to test
+* Run a service.
+* Go to page http://localhost:8080/swagger-ui.html
